@@ -35,7 +35,7 @@ const PostNew = ({handleSubmit}) => {
                 <select className="form-control">
                     {caterogies.map(c => {
                         return (
-                            <option>{c}</option>
+                            <option key={c}>{c}</option>
                         )
                     })}
                 </select>
