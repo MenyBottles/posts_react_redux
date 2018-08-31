@@ -10,7 +10,6 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import reducers from './reducers/index';
 import PostsIndex from './components/posts_index';
 import PostNew from './components/post_new';
-import NavBar from './components/nav_bar';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -19,7 +18,6 @@ const App = () => {
         <Provider store={createStoreWithMiddleware(reducers)}>
             <Router>
                 <div>
-                    <NavBar/>
                     <Route exact path="/" component={PostsIndex}/>
                     <Route path="/post/new" component={PostNew}/>
                 </div>

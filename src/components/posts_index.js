@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux'
 import {fetchPosts} from '../actions/index';
 import {Link} from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 
 class PostsIndex extends React.Component{
-
     constructor(props){
         super(props)
 
@@ -50,13 +51,18 @@ class PostsIndex extends React.Component{
     render() {
         return (
             <div className="col-lg-8 container mt-5">
-                <Link to="/post/new" className="btn btn-primary mb-3">Agregar Post</Link>
                 <div className="bg-light border border-light rounded shadow-lg">
                     <SearchBar onSubmit={this.onSubmitInput} onChange={this.onChangeInput} value={this.state.searchTerm}/>
                     <ul className="list-group m-3">
                         {this.renderPosts()}
                     </ul>
                 </div>
+                <Link to="/post/new" className="mt-3 float-right">
+                    <Button variant="fab" color="primary" aria-label="Add">
+                        <AddIcon />
+                    </Button>
+                </Link>
+                
             </div>
             
         )
