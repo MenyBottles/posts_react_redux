@@ -1,9 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import {fetchPosts} from '../actions/index';
+import {fetchPosts,deletePost} from '../actions/index';
 import {Link} from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import {
+    Button,ListItem,ListItemText,List,ListItemSecondaryAction,IconButton
+} from '@material-ui/core/';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
 
 class PostsIndex extends React.Component{
     constructor(props){
@@ -11,7 +14,8 @@ class PostsIndex extends React.Component{
 
         this.state =  {
             searchTerm : '',
-            searchTermSubmit : ''
+            searchTermSubmit : '',
+            open: false,
         }
 
         this.onSubmitInput = this.onSubmitInput.bind(this);
@@ -33,13 +37,22 @@ class PostsIndex extends React.Component{
         })
     }
 
+    onDeletePost = (id) => {
+        deletePost(id, () => this.props.fetchPosts())
+      };
+
     renderPosts()  {
         const { posts } = this.props
         return (
             posts.filter(p => p.title.includes(this.state.searchTermSubmit)).map(p => 
-                <li className="list-group-item" key={p.id}>
-                        {p.title}
-                    </li>
+                <ListItem key={p.id}>
+                <ListItemText primary={p.title} />
+                <ListItemSecondaryAction>
+                    <IconButton >
+                        <DeleteForeverRoundedIcon onClick={() => this.onDeletePost(p.id)}/>
+                    </IconButton>
+                </ListItemSecondaryAction>
+                </ListItem>
             )
         )
     }
@@ -53,16 +66,15 @@ class PostsIndex extends React.Component{
             <div className="col-lg-8 container mt-5">
                 <div className="bg-light border border-light rounded shadow-lg">
                     <SearchBar onSubmit={this.onSubmitInput} onChange={this.onChangeInput} value={this.state.searchTerm}/>
-                    <ul className="list-group m-3">
+                    <List>
                         {this.renderPosts()}
-                    </ul>
+                    </List>
                 </div>
                 <Link to="/post/new" className="mt-3 float-right">
-                    <Button variant="fab" color="primary" aria-label="Add">
+                    <Button color="primary" mini>
                         <AddIcon />
                     </Button>
                 </Link>
-                
             </div>
             
         )
