@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import {fetchPosts,deletePost} from '../actions/index';
+import {fetchPostsAPI, deletePost} from '../actions/index';
 import {Link} from 'react-router-dom';
 import {
     Button,ListItem,ListItemText,List,ListItemSecondaryAction,IconButton
@@ -39,16 +39,16 @@ class PostsIndex extends React.Component{
 
     onDeletePost = (id) => {
         deletePost(id, () => this.props.fetchPosts())
-      };
+    };
 
     renderPosts()  {
         const { posts } = this.props
         return (
             posts.filter(p => p.title.includes(this.state.searchTermSubmit)).map(p => 
-                <ListItem key={p.id}>
+                <ListItem key={p.id} button onClick={() => this.props.history.push(`/posts/${p.id}`)}>
                 <ListItemText primary={p.title} />
                 <ListItemSecondaryAction>
-                    <IconButton >
+                    <IconButton>
                         <DeleteForeverRoundedIcon onClick={() => this.onDeletePost(p.id)}/>
                     </IconButton>
                 </ListItemSecondaryAction>
@@ -58,24 +58,31 @@ class PostsIndex extends React.Component{
     }
 
     componentDidMount(){
-        this.props.fetchPosts();
+        this.props.fetchPostsAPI();
     }
 
     render() {
+        const { isLoading } = this.props
         return (
             <div className="col-lg-8 container mt-5">
-                <div className="bg-light border border-light rounded shadow-lg">
-                    <SearchBar onSubmit={this.onSubmitInput} onChange={this.onChangeInput} value={this.state.searchTerm}/>
-                    <List>
-                        {this.renderPosts()}
-                    </List>
-                </div>
-                <Link to="/post/new" className="mt-3 float-right">
-                    <Button color="primary" mini>
-                        <AddIcon />
-                    </Button>
-                </Link>
+                {
+                    isLoading ? <div>Loading...</div> :
+                        <div>
+                            <div className="bg-light border border-light rounded shadow-lg">
+                                <SearchBar onSubmit={this.onSubmitInput} onChange={this.onChangeInput} value={this.state.searchTerm}/>
+                                <List>
+                                    {this.renderPosts()}
+                                </List>
+                            </div>
+                            <Link to="/post/new" className="mt-3 float-right">
+                                <Button color="primary" mini>
+                                    <AddIcon />
+                                </Button>
+                            </Link>
+                        </div>
+                 }   
             </div>
+
             
         )
     }
@@ -95,6 +102,10 @@ const SearchBar = ({onSubmit,value,onChange}) => {
 }
 
 const mapStateToProps = (state) => {
-    return {posts: state.posts}
+    console.log(state)
+    return {
+        posts: state.posts.entities,
+        isLoading: state.posts.isLoading
+    }
 }
-export default connect(mapStateToProps,{fetchPosts})(PostsIndex);
+export default connect(mapStateToProps,{fetchPostsAPI})(PostsIndex);
